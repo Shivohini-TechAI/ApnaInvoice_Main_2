@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-navy: #0B2D5B;
+    --brand-yellow: #F2C01A;
+    --brand-cyan: #6FE9E8;
+    --brand-dark-navy: #16376F;
+    --brand-border: #4C5A73;
+    --brand-panel: #F7F9FC;
+    --brand-text: #101828;
+  }
+
+  .invoice-preview-image {
+    image-rendering: auto;
+  }
+}
+
+@layer components {
+  .a4-page {
+    width: 210mm;
+    min-height: 297mm;
+  }
+
+  /* Offer Letter Styles */
+  .offer-letter-container {
+    width: 100%;
+    max-width: 680px;
+    aspect-ratio: 210 / 297;
+    font-family: 'Times New Roman', serif;
+    color: black;
+    position: relative;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .offer-letter-header {
+    padding: 22px 46px 6px 46px;
+  }
+
+  .offer-letter-header-top {
+    margin-bottom: 8px;
+  }
+
+  .offer-letter-logo {
+    width: 78px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .offer-letter-company-info {
+    line-height: 1.15;
+  }
+
+  .offer-letter-company-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .offer-letter-llpin {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .offer-letter-subtitle {
+    font-style: italic;
+    font-size: 11px;
+    margin-top: 1px;
+  }
+
+  .offer-letter-divider {
+    height: 2px;
+    background: linear-gradient(to right, #0099A8 0%, #F5B041 100%);
+    margin-top: 6px;
+    margin-bottom: 10px;
+  }
+
+  .offer-letter-body {
+    padding: 0 46px 0 46px;
+    font-size: 10.5px;
+    line-height: 1.35;
+  }
+
+  .offer-letter-section {
+    margin-bottom: 8px;
+  }
+
+  .offer-letter-to-section {
+    margin-bottom: 8px;
+  }
+
+  .offer-letter-subject {
+    margin-bottom: 7px;
+  }
+
+  .offer-letter-greeting {
+    margin-bottom: 6px;
+  }
+
+  .offer-letter-content {
+    margin-bottom: 8px;
+  }
+
+  .offer-letter-terms-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .offer-letter-terms-list {
+    margin-left: 22px;
+  }
+
+  .offer-letter-terms-item {
+    margin-bottom: 5px;
+  }
+
+  .offer-letter-acceptance-section {
+    margin-bottom: 7px;
+  }
+
+  .offer-letter-acceptance-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .offer-letter-closing {
+    margin-bottom: 6px;
+  }
+
+  .offer-letter-closing-paragraph {
+    margin-bottom: 12px;
+  }
+
+  .offer-letter-closing-name {
+    margin-bottom: 1px;
+  }
+
+  .offer-letter-acknowledgment {
+    margin-bottom: 7px;
+  }
+
+  .offer-letter-acknowledgment-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .offer-letter-acknowledgment-text {
+    margin-bottom: 10px;
+  }
+
+  .offer-letter-footer-border {
+    border-top: 2px solid #1f2937;
+    margin-bottom: 8px;
+  }
+
+  .offer-letter-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}

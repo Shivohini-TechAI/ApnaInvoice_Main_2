@@ -1,0 +1,38 @@
+{
+  "name": "apna-invoice-platform",
+  "version": "1.0.0",
+  "description": "Full-stack invoicing and project management platform",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:lint": "cd frontend && npm run lint",
+    "frontend:preview": "cd frontend && npm run preview",
+    "backend:config": "cd backend && supabase config list",
+    "backend:status": "cd backend && supabase status",
+    "dev": "npm run frontend:dev",
+    "build": "npm run frontend:build"
+  },
+  "keywords": [
+    "invoicing",
+    "project-management",
+    "crm",
+    "saas",
+    "react",
+    "supabase"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "i18next": "^26.3.1",
+    "react-i18next": "^17.0.8"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  }
+}
