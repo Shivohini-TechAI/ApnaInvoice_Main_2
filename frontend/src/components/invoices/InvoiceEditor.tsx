@@ -1,3 +1,4 @@
+import { API_URL } from '../../utils/api';
 import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, RotateCcw, Copy, FileText, Save } from 'lucide-react';
 import { toast } from 'sonner';
@@ -6,7 +7,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { getCurrencySymbol, formatCurrency } from '../../utils/currencyFormatter';
 import { fetchUserInvoices } from '../../services/invoiceListService';
 
-const API_URL = 'http://localhost:5001/api';
 
 interface InvoiceEditorProps {
   onSaved?: () => void;

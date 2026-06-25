@@ -1,3 +1,4 @@
+import { API_URL } from './api';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -122,7 +123,7 @@ export async function generateInvoicePDF(options: GeneratePDFOptions): Promise<v
 
   // Save PDF metadata in database
   if (invoiceId && token) {
-    await fetch(`http://localhost:5001/api/invoices/${invoiceId}/pdf`, {
+    await fetch(`${API_URL}/invoices/${invoiceId}/pdf`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

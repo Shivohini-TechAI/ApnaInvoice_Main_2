@@ -1,3 +1,4 @@
+import { API_URL } from '../../utils/api';
 import React, { useEffect, useRef, useState } from 'react';
 import { Plus, Trash2, Save, Download, RotateCcw, Upload, Edit, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -30,7 +31,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ onSaved }) => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5001/api/auth/users', {
+        const response = await fetch(`${API_URL}/auth/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -63,7 +64,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ onSaved }) => {
     const loadSignature = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5001/api/auth/signature', {
+        const response = await fetch(`${API_URL}/auth/signature`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -101,7 +102,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ onSaved }) => {
       const token = localStorage.getItem('token');
       const formData = new FormData();
       formData.append('file', file);
-      const uploadResponse = await fetch('http://localhost:5001/api/upload', {
+      const uploadResponse = await fetch(`${API_URL}/upload`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -113,7 +114,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ onSaved }) => {
         throw new Error('Upload failed');
       }
       const uploadedUrl = uploadData.file.url;
-      const saveResponse = await fetch('http://localhost:5001/api/auth/signature', {
+      const saveResponse = await fetch(`${API_URL}/auth/signature`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -222,7 +223,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ onSaved }) => {
     const currentSignatureUrl = store.signatureUrl;
 
     if (currentSignatureUrl) {
-      await fetch('http://localhost:5001/api/upload/delete', {
+      await fetch(`${API_URL}/upload/delete`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -234,7 +235,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ onSaved }) => {
       });
     }
 
-    await fetch('http://localhost:5001/api/auth/signature', {
+    await fetch(`${API_URL}/auth/signature`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
