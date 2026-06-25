@@ -112,7 +112,9 @@ export const deleteFile = async (_bucket: string, path: string) => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ path }),
+   body: JSON.stringify({
+  url: path,
+}),
   });
 
   const data = await response.json();

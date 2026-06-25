@@ -1,29 +1,16 @@
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 const authMiddleware = require("../middleware/authMiddleware");
+const cloudinary = require("../config/cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 const router = express.Router();
 
-const uploadDir = path.join(__dirname, "..", "uploads");
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueName =
-      Date.now() +
-      "-" +
-      Math.round(Math.random() * 1e9) +
-      path.extname(file.originalname);
-
-    cb(null, uniqueName);
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "apna-invoice-signatures",
+    allowed_formats: ["jpg", "jpeg", "png"],
   },
 });
 
@@ -43,19 +30,15 @@ router.post("/", authMiddleware, upload.single("file"), (req, res) => {
       });
     }
 
-    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "File uploaded successfully",
       file: {
         id: req.file.filename,
         name: req.file.originalname,
-        fileName: req.file.filename,
-        url: fileUrl,
+        url: req.file.path,
         type: req.file.mimetype,
         size: req.file.size,
-        path: `/uploads/${req.file.filename}`,
         uploadedAt: new Date().toISOString(),
         uploadedBy: req.user.id,
       },
@@ -63,7 +46,7 @@ router.post("/", authMiddleware, upload.single("file"), (req, res) => {
   } catch (error) {
     console.error("Upload error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "File upload failed",
       error: error.message,
@@ -71,32 +54,42 @@ router.post("/", authMiddleware, upload.single("file"), (req, res) => {
   }
 });
 
-router.delete("/delete", authMiddleware, (req, res) => {
+router.delete("/delete", authMiddleware, async (req, res) => {
   try {
-    const { path: filePath } = req.body;
+    const { url } = req.body;
 
-    if (!filePath) {
+    if (!url) {
       return res.status(400).json({
         success: false,
-        message: "File path is required",
+        message: "URL is required",
       });
     }
 
-    const fileName = path.basename(filePath);
-    const fullPath = path.join(uploadDir, fileName);
-
-    if (fs.existsSync(fullPath)) {
-      fs.unlinkSync(fullPath);
+    const parts = url.split("/upload/");
+    if (parts.length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Cloudinary URL",
+      });
     }
 
-    res.status(200).json({
+    
+
+    console.log("Deleting from Cloudinary:", publicId);
+
+    const result = await cloudinary.uploader.destroy(publicId);
+
+    console.log("Cloudinary delete result:", result);
+
+    return res.status(200).json({
       success: true,
-      message: "File deleted successfully",
+      message: "Signature deleted successfully",
+      result,
     });
   } catch (error) {
-    console.error("Delete file error:", error);
+    console.error("Cloudinary delete error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "File delete failed",
       error: error.message,
@@ -104,4 +97,4 @@ router.delete("/delete", authMiddleware, (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router; 

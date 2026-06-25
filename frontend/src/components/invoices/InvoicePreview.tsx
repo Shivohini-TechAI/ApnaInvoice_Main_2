@@ -216,24 +216,41 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ onSaved }) => {
     }
   };
 
-  const handleDeleteSignature = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      await fetch('http://localhost:5001/api/auth/signature', {
-        method: 'PUT',
+      const handleDeleteSignature = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const currentSignatureUrl = store.signatureUrl;
+
+    if (currentSignatureUrl) {
+      await fetch('http://localhost:5001/api/upload/delete', {
+        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ signature_url: null }),
+        body: JSON.stringify({
+          url: currentSignatureUrl,
+        }),
       });
-      store.updateField('signatureUrl', '');
-      store.updateField('includeSignature', false);
-      toast.success('Signature deleted');
-    } catch (error) {
-      toast.error('Delete failed');
     }
-  };
+
+    await fetch('http://localhost:5001/api/auth/signature', {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ signature_url: null }),
+    });
+
+    store.updateField('signatureUrl', '');
+    store.updateField('includeSignature', false);
+    toast.success('Signature deleted');
+  } catch (error) {
+    console.error('Delete signature error:', error);
+    toast.error('Delete failed');
+  }
+};
 
   return (
     <div className="h-full overflow-y-auto bg-gray-100 dark:bg-gray-900">

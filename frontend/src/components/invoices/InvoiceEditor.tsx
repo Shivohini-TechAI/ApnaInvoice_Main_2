@@ -73,6 +73,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ onSaved }) => {
         const response = await fetch(`${API_URL}/auth/signature`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         const data = await response.json();
         if (data.success && data.signature_url) {
           setDbSignatureUrl(data.signature_url);
@@ -154,17 +155,18 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ onSaved }) => {
       const token = localStorage.getItem('token');
 
       // Delete file from server if it's a server-hosted URL
-      if (dbSignatureUrl && dbSignatureUrl.includes('/uploads/')) {
-        const filePath = `/uploads/${dbSignatureUrl.split('/uploads/')[1]}`;
-        await fetch(`${API_URL}/upload/delete`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ path: filePath }),
-        });
-      }
+      if (dbSignatureUrl) {
+  await fetch(`${API_URL}/upload/delete`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      url: dbSignatureUrl,
+    }),
+  });
+}
 
       // Clear from DB
       const response = await fetch(`${API_URL}/auth/signature`, {

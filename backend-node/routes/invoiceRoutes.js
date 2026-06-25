@@ -24,8 +24,10 @@ router.get("/", authMiddleware, async (req, res) => {
         ) AS line_items
        FROM invoices i
        LEFT JOIN invoice_line_items li ON i.id = li.invoice_id
+       WHERE i.created_by = $1
        GROUP BY i.id
-       ORDER BY i.created_at DESC`
+       ORDER BY i.created_at DESC`,
+      [req.user.id]
     );
 
     res.status(200).json({
@@ -41,6 +43,7 @@ router.get("/", authMiddleware, async (req, res) => {
     });
   }
 });
+
 router.post("/:id/pdf", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -50,6 +53,18 @@ router.post("/:id/pdf", authMiddleware, async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "PDF file name is required",
+      });
+    }
+
+    const invoiceCheck = await pool.query(
+      `SELECT id FROM invoices WHERE id = $1 AND created_by = $2`,
+      [id, req.user.id]
+    );
+
+    if (invoiceCheck.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Invoice not found",
       });
     }
 
@@ -80,10 +95,10 @@ router.get("/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
 
-    const invoiceResult = await pool.query(
-      "SELECT * FROM invoices WHERE id = $1",
-      [id]
-    );
+   const invoiceResult = await pool.query(
+  `SELECT * FROM invoices WHERE id = $1 AND created_by = $2`,
+  [id, req.user.id]
+);
 
     if (invoiceResult.rows.length === 0) {
       return res.status(404).json({
@@ -338,8 +353,9 @@ router.put("/:id", authMiddleware, async (req, res) => {
            terms = $23,
            include_signature = $24,
            signature_url = $25
-       WHERE id = $26
-       RETURNING *`,
+           WHERE id = $26
+           AND created_by = $27
+           RETURNING * `,
       [
         number,
         issue_date,
@@ -367,6 +383,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
         include_signature !== undefined ? include_signature : true,
         signature_url || null,
         id,
+        req.user.id,
       ]
     );
 
@@ -441,9 +458,12 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     const { id } = req.params;
 
     const result = await pool.query(
-      "DELETE FROM invoices WHERE id = $1 RETURNING *",
-      [id]
-    );
+  `DELETE FROM invoices
+   WHERE id = $1
+   AND created_by = $2
+   RETURNING *`,
+  [id, req.user.id]
+);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
