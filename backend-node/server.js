@@ -27,20 +27,22 @@ app.use((req, res, next) => {
 // Allowed Origins
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL, // Vercel URL
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow Postman, server-to-server requests, etc.
+    origin(origin, callback) {
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app")
+      ) {
         return callback(null, true);
       }
 
-      return callback(new Error("Not allowed by CORS"));
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
     },
     credentials: true,
   })
