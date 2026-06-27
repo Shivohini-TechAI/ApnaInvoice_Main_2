@@ -68,8 +68,7 @@ const LoginPage: React.FC = () => {
         return;
       }
       // Navigate to dashboard and reload the app so all providers initialize
-      navigate('/admin/invoices');
-      window.location.reload();
+      navigate('/admin/invoices', { replace: true });
     } catch (err: any) {
       setError(err.message || 'Login failed');
     } finally {
